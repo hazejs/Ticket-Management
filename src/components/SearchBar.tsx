@@ -18,7 +18,7 @@ export function SearchBar() {
     <div className='relative'>
       <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4' />
       <Input
-        className='pl-10'
+        className='pl-10 h-[50px] text-[1.2rem]'
         placeholder='Search tickets...'
         onChange={(e) => debouncedSearch(e.target.value)}
       />

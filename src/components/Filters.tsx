@@ -49,7 +49,7 @@ export function Filters() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant='outline' className='gap-2'>
+        <Button variant='outline' className='gap-2 h-[50px]'>
           <SlidersHorizontal className='h-4 w-4' />
           Filters
         </Button>
