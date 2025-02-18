@@ -5,7 +5,6 @@ import { SearchBar } from '@/components/SearchBar';
 import { Filters } from '@/components/Filters';
 import { useInView } from 'react-intersection-observer';
 import { UserTypeSwitch } from './components/UserTypeSwitch';
-import { UserType } from './lib/types';
 
 // Lazy load components
 const TicketGrid = lazy(async () => {
@@ -18,7 +17,7 @@ const TicketList = lazy(async () => {
 });
 
 function App() {
-  // Get userType from URL parameters using native URLSearchParams
+  // Get userType from URL parameters using
   const urlParams = new URLSearchParams(window.location.search);
   const urlUserType = urlParams.get('userType') || 'local';
 
@@ -106,20 +105,6 @@ function App() {
       `${window.location.pathname}?${params}`
     );
   }, [userType]);
-
-  // Handle browser navigation (back/forward)
-  useEffect(() => {
-    const handlePopState = () => {
-      const params = new URLSearchParams(window.location.search);
-      const newUserType = params.get('userType') || 'local';
-      if (newUserType !== userType) {
-        setUserType(newUserType as UserType);
-      }
-    };
-
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [userType, setUserType]);
 
   return (
     <div className='min-h-screen bg-background'>
