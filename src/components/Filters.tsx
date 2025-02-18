@@ -49,8 +49,8 @@ export function Filters() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" className="gap-2">
-          <SlidersHorizontal className="h-4 w-4" />
+        <Button variant='outline' className='gap-2'>
+          <SlidersHorizontal className='h-4 w-4' />
           Filters
         </Button>
       </SheetTrigger>
@@ -62,20 +62,20 @@ export function Filters() {
           </SheetDescription>
         </SheetHeader>
 
-        <div className="mt-6 space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Price Range</label>
-            <div className="flex gap-2">
+        <div className='mt-6 space-y-4'>
+          <div className='space-y-2'>
+            <label className='text-sm font-medium'>Price Range</label>
+            <div className='flex gap-2'>
               <Input
-                type="number"
-                placeholder="Min"
+                type='number'
+                placeholder='Min'
                 onChange={(e) =>
                   debouncedSetFilter('minPrice', Number(e.target.value))
                 }
               />
               <Input
-                type="number"
-                placeholder="Max"
+                type='number'
+                placeholder='Max'
                 onChange={(e) =>
                   debouncedSetFilter('maxPrice', Number(e.target.value))
                 }
@@ -83,13 +83,13 @@ export function Filters() {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Category</label>
+          <div className='space-y-2'>
+            <label className='text-sm font-medium'>Category</label>
             <Select
               onValueChange={(value) => debouncedSetFilter('category', value)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select category" />
+                <SelectValue placeholder='Select category' />
               </SelectTrigger>
               <SelectContent>
                 {categories.map((category) => (
@@ -101,13 +101,13 @@ export function Filters() {
             </Select>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Location</label>
+          <div className='space-y-2'>
+            <label className='text-sm font-medium'>Location</label>
             <Select
               onValueChange={(value) => debouncedSetFilter('location', value)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select location" />
+                <SelectValue placeholder='Select location' />
               </SelectTrigger>
               <SelectContent>
                 {locations.map((location) => (
@@ -119,25 +119,25 @@ export function Filters() {
             </Select>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Date Range</label>
-            <div className="flex gap-2">
+          <div className='space-y-2'>
+            <label className='text-sm font-medium'>Date Range</label>
+            <div className='flex gap-2'>
               <Input
-                type="date"
+                type='date'
                 onChange={(e) =>
                   debouncedSetFilter('startDate', e.target.value)
                 }
               />
               <Input
-                type="date"
+                type='date'
                 onChange={(e) => debouncedSetFilter('endDate', e.target.value)}
               />
             </div>
           </div>
 
           <Button
-            variant="outline"
-            className="w-full"
+            variant='outline'
+            className='w-full'
             onClick={() => resetFilters()}
           >
             Reset Filters

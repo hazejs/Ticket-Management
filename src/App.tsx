@@ -1,14 +1,27 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, lazy, Suspense } from 'react';
 import { useTicketStore } from '@/lib/store';
 import { getTickets } from '@/lib/api';
-import { TicketGrid } from '@/components/TicketGrid';
-import { TicketList } from '@/components/TicketList';
 import { SearchBar } from '@/components/SearchBar';
 import { Filters } from '@/components/Filters';
-import { UserTypeSwitch } from '@/components/UserTypeSwitch';
 import { useInView } from 'react-intersection-observer';
+import { UserTypeSwitch } from './components/UserTypeSwitch';
+import { UserType } from './lib/types';
+
+// Lazy load components
+const TicketGrid = lazy(async () => {
+  const module = await import('./components/TicketGrid');
+  return { default: module.TicketGrid };
+});
+const TicketList = lazy(async () => {
+  const module = await import('./components/TicketList');
+  return { default: module.TicketList };
+});
 
 function App() {
+  // Get userType from URL parameters using native URLSearchParams
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlUserType = urlParams.get('userType') || 'local';
+
   const {
     tickets,
     userType,
@@ -19,6 +32,7 @@ function App() {
     setPagination,
     setIsLoading,
     isLoading,
+    setUserType,
   } = useTicketStore();
 
   const { ref: loadMoreRef, inView } = useInView();
@@ -75,6 +89,38 @@ function App() {
     fetchTickets();
   }, [userType, searchQuery, filterOptions]);
 
+  // Sync URL parameter with store state
+  useEffect(() => {
+    setUserType(urlUserType as 'local' | 'tourist');
+  }, [urlUserType, setUserType]);
+
+  // Update URL when userType changes
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    params.set('userType', userType);
+
+    // Update URL without page reload
+    window.history.replaceState(
+      {},
+      '',
+      `${window.location.pathname}?${params}`
+    );
+  }, [userType]);
+
+  // Handle browser navigation (back/forward)
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      const newUserType = params.get('userType') || 'local';
+      if (newUserType !== userType) {
+        setUserType(newUserType as UserType);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [userType, setUserType]);
+
   return (
     <div className='min-h-screen bg-background'>
       <div className='container mx-auto py-8 px-4'>
@@ -92,11 +138,19 @@ function App() {
           </div>
         </div>
 
-        {userType === 'local' ? (
-          <TicketGrid tickets={tickets} isLoading={isLoading} />
-        ) : (
-          <TicketList tickets={tickets} isLoading={isLoading} />
-        )}
+        <Suspense
+          fallback={
+            <div className='flex justify-center items-center h-96'>
+              <div className='animate-spin rounded-full h-6 w-6 border-b-2 border-primary'></div>
+            </div>
+          }
+        >
+          {userType === 'local' ? (
+            <TicketGrid tickets={tickets} isLoading={isLoading} />
+          ) : (
+            <TicketList tickets={tickets} isLoading={isLoading} />
+          )}
+        </Suspense>
 
         <div ref={loadMoreRef} className='h-20'>
           {isLoading && tickets.length > 0 && (
