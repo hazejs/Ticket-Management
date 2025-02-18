@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 import { useTicketStore } from '@/lib/store';
