@@ -19,7 +19,10 @@ const TicketList = lazy(async () => {
 function App() {
   // Get userType from URL parameters using
   const urlParams = new URLSearchParams(window.location.search);
-  const urlUserType = urlParams.get('userType') || 'local';
+  const urlUserType = urlParams.get('userType');
+
+  // Add a ref to track if we're updating from URL
+  const isUpdatingFromUrl = useRef(false);
 
   const {
     tickets,
@@ -90,11 +93,19 @@ function App() {
 
   // Sync URL parameter with store state
   useEffect(() => {
-    setUserType(urlUserType as 'local' | 'tourist');
-  }, [urlUserType, setUserType]);
+    if (urlUserType && (urlUserType === 'local' || urlUserType === 'tourist')) {
+      isUpdatingFromUrl.current = true;
+      setUserType(urlUserType as 'local' | 'tourist');
+    }
+  }, []);
 
-  // Update URL when userType changes
+  // Update URL when userType changes, but only if not triggered by URL
   useEffect(() => {
+    if (isUpdatingFromUrl.current) {
+      isUpdatingFromUrl.current = false;
+      return;
+    }
+
     const params = new URLSearchParams(window.location.search);
     params.set('userType', userType);
 
